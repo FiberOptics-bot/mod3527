@@ -27,6 +27,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import org.fiberoptics.mod3527.event.ModEventHandler;
 import org.fiberoptics.mod3527.item.BulletproofVest;
 import org.slf4j.Logger;
 
@@ -54,6 +55,8 @@ public class Mod3527 {
     public Mod3527() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         IEventBus forgeEventBus = MinecraftForge.EVENT_BUS;
+
+        forgeEventBus.register(ModEventHandler.class);
 
         // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
