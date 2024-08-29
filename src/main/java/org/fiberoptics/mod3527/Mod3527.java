@@ -53,6 +53,7 @@ public class Mod3527 {
 
     public Mod3527() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        IEventBus forgeEventBus = MinecraftForge.EVENT_BUS;
 
         // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
