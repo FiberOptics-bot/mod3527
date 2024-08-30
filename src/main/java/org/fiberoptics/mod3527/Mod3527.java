@@ -33,6 +33,8 @@ import org.fiberoptics.mod3527.event.ModEventHandler;
 import org.fiberoptics.mod3527.item.BulletproofVest;
 import org.slf4j.Logger;
 
+import java.util.Random;
+
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(Mod3527.MODID)
 public class Mod3527 {
@@ -50,6 +52,8 @@ public class Mod3527 {
 
     public static final RegistryObject<Item> BULLETPROOF_VEST = ITEMS.register("bulletproof_vest", () -> new BulletproofVest());
     public static final RegistryObject<Item> BULLETPROOF_VEST_INTERMEDIATE = ITEMS.register("bulletproof_vest_intermediate", () -> new Item(new Item.Properties().stacksTo(1)));
+
+    public static final Random RANDOM_GENERATOR = new Random();
 
     public static final RegistryObject<CreativeModeTab> EXAMPLE_TAB = CREATIVE_MODE_TABS.register("example_tab", () -> CreativeModeTab.builder().withTabsBefore(CreativeModeTabs.COMBAT).icon(() -> BULLETPROOF_VEST.get().getDefaultInstance()).displayItems((parameters, output) -> {
         output.accept(BULLETPROOF_VEST.get()); // Add the example item to the tab. For your own tabs, this method is preferred over the event
@@ -76,6 +80,7 @@ public class Mod3527 {
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
 
+        RANDOM_GENERATOR.setSeed(System.currentTimeMillis());
         // Register our mod's ForgeConfigSpec so that Forge can create and load the config file for us
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
