@@ -8,6 +8,8 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -47,9 +49,11 @@ public class Mod3527 {
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
 
     public static final RegistryObject<Item> BULLETPROOF_VEST = ITEMS.register("bulletproof_vest", () -> new BulletproofVest());
+    public static final RegistryObject<Item> BULLETPROOF_VEST_INTERMEDIATE = ITEMS.register("bulletproof_vest_intermediate", () -> new Item(new Item.Properties().stacksTo(1)));
 
     public static final RegistryObject<CreativeModeTab> EXAMPLE_TAB = CREATIVE_MODE_TABS.register("example_tab", () -> CreativeModeTab.builder().withTabsBefore(CreativeModeTabs.COMBAT).icon(() -> BULLETPROOF_VEST.get().getDefaultInstance()).displayItems((parameters, output) -> {
         output.accept(BULLETPROOF_VEST.get()); // Add the example item to the tab. For your own tabs, this method is preferred over the event
+        output.accept(BULLETPROOF_VEST_INTERMEDIATE.get());
     }).build());
 
     public Mod3527() {
@@ -60,7 +64,6 @@ public class Mod3527 {
 
         // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
-
         // Register the Deferred Register to the mod event bus so blocks get registered
         BLOCKS.register(modEventBus);
         // Register the Deferred Register to the mod event bus so items get registered
