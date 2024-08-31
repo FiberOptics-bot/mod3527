@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "mod3527:item/bulletproof_vest_intermediate"
+  }
+}
