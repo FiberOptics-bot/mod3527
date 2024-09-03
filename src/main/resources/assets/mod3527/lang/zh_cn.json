@@ -3,5 +3,6 @@
   "item.mod3527.bulletproof_vest_intermediate": "天工防弹衣（半成品）",
   "curios.identifier.vest": "防弹衣",
   "item.mod3527.agile_bulletproof_vest": "迅捷天工防弹衣",
-  "message.mod3527.bulletproof_vest_broken": "你的防弹衣已损坏"
+  "message.mod3527.bulletproof_vest_broken": "你的防弹衣已损坏",
+  "item.mod3527.stun_bulletproof_vest": "震击天工防弹衣"
 }
