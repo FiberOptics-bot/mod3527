@@ -33,6 +33,7 @@ public class Config {
     // a list of strings that are treated as resource locations for items
     private static final ForgeConfigSpec.ConfigValue<List<? extends String>> ITEM_STRINGS = BUILDER.comment("A list of items to log on common setup.").defineListAllowEmpty("items", List.of("minecraft:iron_ingot"), Config::validateItemName);
     */
+
     private static final ForgeConfigSpec.DoubleValue BULLETPROOF_VEST_MULTIPLIER = BUILDER
             .comment("Damage multiplier of normal vest")
             .translation(Mod3527.MODID+".config."+"bulletproof_vest_multiplier")
@@ -53,12 +54,19 @@ public class Config {
             .translation(Mod3527.MODID+".config."+"upgraded_bulletproof_vest_durability")
             .defineInRange("upgradedBulletproofVestDurability",500,1,Integer.MAX_VALUE);
 
+    private static final ForgeConfigSpec.IntValue AGILE_BULLETPROOF_VEST_AMPLIFIER = BUILDER
+            .comment("Amplifier of movement speed effect when wearing agile bulletproof vest " +
+                    "- amplifier value 0 refers to effect level 1")
+            .translation(Mod3527.MODID+".config."+"agile_bulletproof_vest_amplifier")
+            .defineInRange("agileBulletproofVestAmplifier",1,0,127);
+
     static final ForgeConfigSpec SPEC = BUILDER.build();
 
     private static double bulletproofVestMultiplier;
     private static double upgradedBulletproofVestMultiplier;
     private static int bulletproofVestDurability;
     private static int upgradedBulletproofVestDurability;
+    private static int agileBulletproofVestAmplifier;
 
     public static double getBulletproofVestMultiplier() {
         return bulletproofVestMultiplier;
@@ -76,11 +84,16 @@ public class Config {
         return upgradedBulletproofVestDurability;
     }
 
+    public static int getAgileBulletproofVestAmplifier() {
+        return agileBulletproofVestAmplifier;
+    }
+
     @SubscribeEvent
     static void onLoad(final ModConfigEvent event) {
         bulletproofVestMultiplier=BULLETPROOF_VEST_MULTIPLIER.get();
         upgradedBulletproofVestMultiplier=UPGRADED_BULLETPROOF_VEST_MULTIPLIER.get();
         bulletproofVestDurability=BULLETPROOF_VEST_DURABILITY.get();
         upgradedBulletproofVestDurability=UPGRADED_BULLETPROOF_VEST_DURABILITY.get();
+        agileBulletproofVestAmplifier=AGILE_BULLETPROOF_VEST_AMPLIFIER.get();
     }
 }
