@@ -56,6 +56,7 @@ public class Mod3527 {
         output.accept(ModItems.AGILE_BULLETPROOF_VEST.get());
         output.accept(ModItems.BULLETPROOF_VEST.get()); // Add the example item to the tab. For your own tabs, this method is preferred over the event
         output.accept(ModItems.BULLETPROOF_VEST_INTERMEDIATE.get());
+        output.accept(ModItems.STUN_BULLETPROOF_VEST.get());
     }).build());
 
     public Mod3527() {

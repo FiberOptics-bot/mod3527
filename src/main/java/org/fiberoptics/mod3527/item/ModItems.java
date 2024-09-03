@@ -23,6 +23,9 @@ public class ModItems {
     public static final RegistryObject<Item> BULLETPROOF_VEST_INTERMEDIATE = ITEMS.register(
             "bulletproof_vest_intermediate",() -> new Item(new Item.Properties().stacksTo(1)));
 
+    public static final RegistryObject<Item> STUN_BULLETPROOF_VEST = ITEMS.register("stun_bulletproof_vest",
+            () -> new StunBulletproofVest(Config.getUpgradedBulletproofVestDurability()));
+
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
     }
