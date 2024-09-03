@@ -8,6 +8,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.registries.DataPackRegistryEvent;
 import org.fiberoptics.mod3527.item.BulletproofVest;
 import top.theillusivec4.curios.api.CuriosApi;
 

@@ -14,8 +14,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class BulletproofVest extends Item implements ICurioItem {
     public static final String CURIO_SLOT = "vest";
 
-    public BulletproofVest() {
-        super(new Item.Properties().defaultDurability(250).requiredFeatures());
+    public BulletproofVest(int durability) {
+        super(new Item.Properties().defaultDurability(durability).requiredFeatures());
     }
 
     @Override

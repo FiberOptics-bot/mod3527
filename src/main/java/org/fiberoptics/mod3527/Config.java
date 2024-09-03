@@ -1,6 +1,8 @@
 package org.fiberoptics.mod3527;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagEntry;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -19,33 +21,66 @@ import java.util.stream.Collectors;
 public class Config {
     private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
 
+    /*
     private static final ForgeConfigSpec.BooleanValue LOG_DIRT_BLOCK = BUILDER.comment("Whether to log the dirt block on common setup").define("logDirtBlock", true);
 
     private static final ForgeConfigSpec.IntValue MAGIC_NUMBER = BUILDER.comment("A magic number").defineInRange("magicNumber", 42, 0, Integer.MAX_VALUE);
 
     public static final ForgeConfigSpec.ConfigValue<String> MAGIC_NUMBER_INTRODUCTION = BUILDER.comment("What you want the introduction message to be for the magic number").define("magicNumberIntroduction", "The magic number is... ");
 
+
+
     // a list of strings that are treated as resource locations for items
     private static final ForgeConfigSpec.ConfigValue<List<? extends String>> ITEM_STRINGS = BUILDER.comment("A list of items to log on common setup.").defineListAllowEmpty("items", List.of("minecraft:iron_ingot"), Config::validateItemName);
+    */
+    private static final ForgeConfigSpec.DoubleValue BULLETPROOF_VEST_MULTIPLIER = BUILDER
+            .comment("Damage multiplier of normal vest")
+            .translation(Mod3527.MODID+".config."+"bulletproof_vest_multiplier")
+            .defineInRange("bulletproofVestMultiplier",0.8d,0d,1d);
+
+    private static final ForgeConfigSpec.DoubleValue UPGRADED_BULLETPROOF_VEST_MULTIPLIER = BUILDER
+            .comment("Damage multiplier of upgraded vest")
+            .translation(Mod3527.MODID+".config."+"upgraded_bulletproof_vest_multiplier")
+            .defineInRange("upgradedBulletproofVestMultiplier",0.6d,0d,1d);
+
+    private static final ForgeConfigSpec.IntValue BULLETPROOF_VEST_DURABILITY = BUILDER
+            .comment("Durability of normal vest")
+            .translation(Mod3527.MODID+".config."+"bulletproof_vest_durability")
+            .defineInRange("bulletproofVestDurability",250,1,Integer.MAX_VALUE);
+
+    private static final ForgeConfigSpec.IntValue UPGRADED_BULLETPROOF_VEST_DURABILITY = BUILDER
+            .comment("Durability of upgraded vest")
+            .translation(Mod3527.MODID+".config."+"upgraded_bulletproof_vest_durability")
+            .defineInRange("upgradedBulletproofVestDurability",500,1,Integer.MAX_VALUE);
 
     static final ForgeConfigSpec SPEC = BUILDER.build();
 
-    public static boolean logDirtBlock;
-    public static int magicNumber;
-    public static String magicNumberIntroduction;
-    public static Set<Item> items;
+    private static double bulletproofVestMultiplier;
+    private static double upgradedBulletproofVestMultiplier;
+    private static int bulletproofVestDurability;
+    private static int upgradedBulletproofVestDurability;
 
-    private static boolean validateItemName(final Object obj) {
-        return obj instanceof final String itemName && ForgeRegistries.ITEMS.containsKey(new ResourceLocation(itemName));
+    public static double getBulletproofVestMultiplier() {
+        return bulletproofVestMultiplier;
+    }
+
+    public static double getUpgradedBulletproofVestMultiplier() {
+        return upgradedBulletproofVestMultiplier;
+    }
+
+    public static int getBulletproofVestDurability() {
+        return bulletproofVestDurability;
+    }
+
+    public static int getUpgradedBulletproofVestDurability() {
+        return upgradedBulletproofVestDurability;
     }
 
     @SubscribeEvent
     static void onLoad(final ModConfigEvent event) {
-        logDirtBlock = LOG_DIRT_BLOCK.get();
-        magicNumber = MAGIC_NUMBER.get();
-        magicNumberIntroduction = MAGIC_NUMBER_INTRODUCTION.get();
-
-        // convert the list of strings into a set of items
-        items = ITEM_STRINGS.get().stream().map(itemName -> ForgeRegistries.ITEMS.getValue(new ResourceLocation(itemName))).collect(Collectors.toSet());
+        bulletproofVestMultiplier=BULLETPROOF_VEST_MULTIPLIER.get();
+        upgradedBulletproofVestMultiplier=UPGRADED_BULLETPROOF_VEST_MULTIPLIER.get();
+        bulletproofVestDurability=BULLETPROOF_VEST_DURABILITY.get();
+        upgradedBulletproofVestDurability=UPGRADED_BULLETPROOF_VEST_DURABILITY.get();
     }
 }

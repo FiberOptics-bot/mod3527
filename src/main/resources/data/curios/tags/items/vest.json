@@ -1,4 +1,7 @@
 {
   "replace": false,
-  "values": ["mod3527:bulletproof_vest"]
+  "values": [
+    "mod3527:bulletproof_vest",
+    "mod3527:agile_bulletproof_vest"
+  ]
 }

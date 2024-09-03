@@ -31,6 +31,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import org.fiberoptics.mod3527.event.ModEventHandler;
 import org.fiberoptics.mod3527.item.BulletproofVest;
+import org.fiberoptics.mod3527.item.ModItems;
 import org.slf4j.Logger;
 
 import java.util.Random;
@@ -45,19 +46,16 @@ public class Mod3527 {
     private static final Logger LOGGER = LogUtils.getLogger();
     // Create a Deferred Register to hold Blocks which will all be registered under the "mod3527" namespace
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
-    // Create a Deferred Register to hold Items which will all be registered under the "mod3527" namespace
-    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
+
     // Create a Deferred Register to hold CreativeModeTabs which will all be registered under the "mod3527" namespace
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
 
-    public static final RegistryObject<Item> BULLETPROOF_VEST = ITEMS.register("bulletproof_vest", () -> new BulletproofVest());
-    public static final RegistryObject<Item> BULLETPROOF_VEST_INTERMEDIATE = ITEMS.register("bulletproof_vest_intermediate", () -> new Item(new Item.Properties().stacksTo(1)));
-
     public static final Random RANDOM_GENERATOR = new Random();
 
-    public static final RegistryObject<CreativeModeTab> EXAMPLE_TAB = CREATIVE_MODE_TABS.register("example_tab", () -> CreativeModeTab.builder().withTabsBefore(CreativeModeTabs.COMBAT).icon(() -> BULLETPROOF_VEST.get().getDefaultInstance()).displayItems((parameters, output) -> {
-        output.accept(BULLETPROOF_VEST.get()); // Add the example item to the tab. For your own tabs, this method is preferred over the event
-        output.accept(BULLETPROOF_VEST_INTERMEDIATE.get());
+    public static final RegistryObject<CreativeModeTab> EXAMPLE_TAB = CREATIVE_MODE_TABS.register("example_tab", () -> CreativeModeTab.builder().withTabsBefore(CreativeModeTabs.COMBAT).icon(() -> ModItems.BULLETPROOF_VEST.get().getDefaultInstance()).displayItems((parameters, output) -> {
+        output.accept(ModItems.AGILE_BULLETPROOF_VEST.get());
+        output.accept(ModItems.BULLETPROOF_VEST.get()); // Add the example item to the tab. For your own tabs, this method is preferred over the event
+        output.accept(ModItems.BULLETPROOF_VEST_INTERMEDIATE.get());
     }).build());
 
     public Mod3527() {
@@ -71,7 +69,7 @@ public class Mod3527 {
         // Register the Deferred Register to the mod event bus so blocks get registered
         BLOCKS.register(modEventBus);
         // Register the Deferred Register to the mod event bus so items get registered
-        ITEMS.register(modEventBus);
+        ModItems.register(modEventBus);
         // Register the Deferred Register to the mod event bus so tabs get registered
 
 
@@ -88,13 +86,6 @@ public class Mod3527 {
     private void commonSetup(final FMLCommonSetupEvent event) {
         // Some common setup code
         LOGGER.info("HELLO FROM COMMON SETUP");
-        LOGGER.info("DIRT BLOCK >> {}", ForgeRegistries.BLOCKS.getKey(Blocks.DIRT));
-
-        if (Config.logDirtBlock) LOGGER.info("DIRT BLOCK >> {}", ForgeRegistries.BLOCKS.getKey(Blocks.DIRT));
-
-        LOGGER.info(Config.magicNumberIntroduction + Config.magicNumber);
-
-        Config.items.forEach((item) -> LOGGER.info("ITEM >> {}", item.toString()));
     }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call
