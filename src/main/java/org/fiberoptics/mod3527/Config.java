@@ -58,7 +58,7 @@ public class Config {
             .comment("Amplifier of movement speed effect when wearing agile bulletproof vest " +
                     "- amplifier value 0 refers to effect level 1")
             .translation(Mod3527.MODID+".config."+"agile_bulletproof_vest_amplifier")
-            .defineInRange("agileBulletproofVestAmplifier",1,0,127);
+            .defineInRange("agileBulletproofVestAmplifier",0,0,127);
 
     static final ForgeConfigSpec SPEC = BUILDER.build();
 
