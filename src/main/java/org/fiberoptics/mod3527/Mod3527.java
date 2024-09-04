@@ -39,7 +39,7 @@ import java.util.Random;
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(Mod3527.MODID)
 public class Mod3527 {
-
+    public static boolean configLoaded=false;
     // Define mod id in a common place for everything to reference
     public static final String MODID = "mod3527";
     // Directly reference a slf4j logger
@@ -60,6 +60,7 @@ public class Mod3527 {
     }).build());
 
     public Mod3527() {
+        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, Config.SPEC);
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         IEventBus forgeEventBus = MinecraftForge.EVENT_BUS;
 
@@ -81,7 +82,7 @@ public class Mod3527 {
 
         RANDOM_GENERATOR.setSeed(System.currentTimeMillis());
         // Register our mod's ForgeConfigSpec so that Forge can create and load the config file for us
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {

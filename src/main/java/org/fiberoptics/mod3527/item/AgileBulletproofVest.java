@@ -5,21 +5,26 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import org.fiberoptics.mod3527.Config;
+import org.fiberoptics.mod3527.util.Cooldowns;
 import top.theillusivec4.curios.api.SlotContext;
 
 public class AgileBulletproofVest extends BulletproofVest{
 
-    public AgileBulletproofVest(int durability) {
-        super(durability);
+    public AgileBulletproofVest() {
+        super();
+    }
+
+    @Override
+    public int getMaxDamage(ItemStack stack) {
+        return Config.getUpgradedBulletproofVestDurability();
     }
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack itemStack) {
+        super.curioTick(slotContext,itemStack);
         LivingEntity entity=slotContext.entity();
-        if(entity.getEffect(MobEffects.MOVEMENT_SPEED) == null ||
-                entity.getEffect(MobEffects.MOVEMENT_SPEED).getDuration() < 20) {
-            entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED,100,
-                    Config.getAgileBulletproofVestAmplifier()));
-        }
+        Cooldowns cooldowns = Config.getCooldownsByUUID(entity.getStringUUID());
+        int cooldown = cooldowns.getAgileCooldown();
+        if(cooldown>0) cooldowns.setAgileCooldown(cooldown-1);
     }
 }

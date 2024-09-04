@@ -9,30 +9,18 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.fiberoptics.mod3527.util.Cooldowns;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 // An example config class. This is not required, but it's a good idea to have one to keep your config organized.
 // Demonstrates how to use Forge's config APIs
 @Mod.EventBusSubscriber(modid = Mod3527.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class Config {
+
+
     private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
-
-    /*
-    private static final ForgeConfigSpec.BooleanValue LOG_DIRT_BLOCK = BUILDER.comment("Whether to log the dirt block on common setup").define("logDirtBlock", true);
-
-    private static final ForgeConfigSpec.IntValue MAGIC_NUMBER = BUILDER.comment("A magic number").defineInRange("magicNumber", 42, 0, Integer.MAX_VALUE);
-
-    public static final ForgeConfigSpec.ConfigValue<String> MAGIC_NUMBER_INTRODUCTION = BUILDER.comment("What you want the introduction message to be for the magic number").define("magicNumberIntroduction", "The magic number is... ");
-
-
-
-    // a list of strings that are treated as resource locations for items
-    private static final ForgeConfigSpec.ConfigValue<List<? extends String>> ITEM_STRINGS = BUILDER.comment("A list of items to log on common setup.").defineListAllowEmpty("items", List.of("minecraft:iron_ingot"), Config::validateItemName);
-    */
 
     private static final ForgeConfigSpec.DoubleValue BULLETPROOF_VEST_MULTIPLIER = BUILDER
             .comment("Damage multiplier of normal vest")
@@ -60,6 +48,32 @@ public class Config {
             .translation(Mod3527.MODID+".config."+"agile_bulletproof_vest_amplifier")
             .defineInRange("agileBulletproofVestAmplifier",0,0,127);
 
+    private static final ForgeConfigSpec.IntValue AGILE_BULLETPROOF_VEST_COOLDOWN = BUILDER
+            .comment("Cooldown in ticks before the agile bulletproof vest can apply effects again")
+            .translation(Mod3527.MODID+".config."+"agile_bulletproof_vest_cooldown")
+            .defineInRange("agileBulletproofVestCooldown",200,0,Integer.MAX_VALUE);
+
+    private static final ForgeConfigSpec.IntValue AGILE_BULLETPROOF_VEST_EFFECT_TIME = BUILDER
+            .comment("Effect time in ticks applied when taking damage wearing agile bulletproof vest")
+            .translation(Mod3527.MODID+".config."+"agile_bulletproof_vest_effect_time")
+            .defineInRange("agileBulletproofVestEffectTime",100,0,Integer.MAX_VALUE);
+
+    private static final ForgeConfigSpec.IntValue STUN_BULLETPROOF_VEST_AMPLIFIER = BUILDER
+            .comment("Amplifier of effects applied on the attacker when wearing stun " +
+                    "bulletproof suit - amplifier value 0 refers to effect level 1")
+            .translation(Mod3527.MODID+".config."+"stun_bulletproof_vest_amplifier")
+            .defineInRange("stunBulletproofVestAmplifier",0,0,127);
+
+    private static final ForgeConfigSpec.IntValue STUN_BULLETPROOF_VEST_COOLDOWN = BUILDER
+            .comment("Cooldown in ticks before the stun bulletproof vest can apply effects again")
+            .translation(Mod3527.MODID+".config."+"stun_bulletproof_vest_cooldown")
+            .defineInRange("stunBulletproofVestCooldown",100,0,Integer.MAX_VALUE);
+
+    private static final ForgeConfigSpec.IntValue STUN_BULLETPROOF_VEST_EFFECT_TIME = BUILDER
+            .comment("Effect time in ticks applied on the attacker when wearing stun bulletproof vest")
+            .translation(Mod3527.MODID+".config."+"stun_bulletproof_vest_effect_time")
+            .defineInRange("stunBulletproofVestEffectTime",20,0,Integer.MAX_VALUE);
+
     static final ForgeConfigSpec SPEC = BUILDER.build();
 
     private static double bulletproofVestMultiplier;
@@ -67,6 +81,11 @@ public class Config {
     private static int bulletproofVestDurability;
     private static int upgradedBulletproofVestDurability;
     private static int agileBulletproofVestAmplifier;
+    private static int agileBulletproofVestCooldown;
+    private static int agileBulletproofVestEffectTime;
+    private static int stunBulletproofVestAmplifier;
+    private static int stunBulletproofVestCooldown;
+    private static int stunBulletproofVestEffectTime;
 
     public static double getBulletproofVestMultiplier() {
         return bulletproofVestMultiplier;
@@ -88,6 +107,26 @@ public class Config {
         return agileBulletproofVestAmplifier;
     }
 
+    public static int getAgileBulletproofVestCooldown() {
+        return agileBulletproofVestCooldown;
+    }
+
+    public static int getAgileBulletproofVestEffectTime() {
+        return agileBulletproofVestEffectTime;
+    }
+
+    public static int getStunBulletproofVestAmplifier() {
+        return stunBulletproofVestAmplifier;
+    }
+
+    public static int getStunBulletproofVestCooldown() {
+        return stunBulletproofVestCooldown;
+    }
+
+    public static int getStunBulletproofVestEffectTime() {
+        return stunBulletproofVestEffectTime;
+    }
+
     @SubscribeEvent
     static void onLoad(final ModConfigEvent event) {
         bulletproofVestMultiplier=BULLETPROOF_VEST_MULTIPLIER.get();
@@ -95,5 +134,18 @@ public class Config {
         bulletproofVestDurability=BULLETPROOF_VEST_DURABILITY.get();
         upgradedBulletproofVestDurability=UPGRADED_BULLETPROOF_VEST_DURABILITY.get();
         agileBulletproofVestAmplifier=AGILE_BULLETPROOF_VEST_AMPLIFIER.get();
+        agileBulletproofVestCooldown=AGILE_BULLETPROOF_VEST_COOLDOWN.get();
+        agileBulletproofVestEffectTime=AGILE_BULLETPROOF_VEST_EFFECT_TIME.get();
+        stunBulletproofVestAmplifier=STUN_BULLETPROOF_VEST_AMPLIFIER.get();
+        stunBulletproofVestCooldown=STUN_BULLETPROOF_VEST_COOLDOWN.get();
+        stunBulletproofVestEffectTime=STUN_BULLETPROOF_VEST_EFFECT_TIME.get();
+    }
+
+    private static final Map<String,Cooldowns> playerCooldowns = new HashMap<>();
+
+    public static Cooldowns getCooldownsByUUID(String uuid) {
+        if(playerCooldowns.get(uuid) == null)
+            playerCooldowns.put(uuid,new Cooldowns(0,0));
+        return playerCooldowns.get(uuid);
     }
 }

@@ -6,19 +6,16 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.registries.DataPackRegistryEvent;
 import org.fiberoptics.mod3527.Config;
 import org.fiberoptics.mod3527.item.AgileBulletproofVest;
 import org.fiberoptics.mod3527.item.BulletproofVest;
 import org.fiberoptics.mod3527.item.StunBulletproofVest;
+import org.fiberoptics.mod3527.util.Cooldowns;
 import top.theillusivec4.curios.api.CuriosApi;
-
-import java.util.Random;
-import java.util.Timer;
 
 import org.fiberoptics.mod3527.Mod3527;
 
@@ -26,8 +23,7 @@ public class ModEventHandler {
 
     @SubscribeEvent
     public static void beforeEntityGunShot(EntityHurtByGunEvent.Pre event) {
-        if(event.getHurtEntity() instanceof Player && event.getHurtEntity().isAlive() &&
-                event.getBaseAmount() >= 1) {
+        if(event.getHurtEntity() instanceof Player && event.getHurtEntity().isAlive()) {
             CuriosApi.getCuriosInventory((LivingEntity) event.getHurtEntity()).ifPresent(curiosInventory -> {
                 curiosInventory.getStacksHandler(BulletproofVest.CURIO_SLOT).ifPresent(slotInventory -> {
                     int i=0;
@@ -35,16 +31,8 @@ public class ModEventHandler {
                     for(i=0;i<slotInventory.getStacks().getSlots();i++) {
                         if (slotInventory.getStacks().getStackInSlot(i).getItem() instanceof BulletproofVest) {
                             if(slotInventory.getStacks().getStackInSlot(i).getItem()
-                                    instanceof StunBulletproofVest) {
-                                multiplier=Config.getUpgradedBulletproofVestMultiplier();
-                                if(event.getAttacker() == null) break;
-                                event.getAttacker().addEffect(new MobEffectInstance(MobEffects.BLINDNESS,
-                                        10));
-                                event.getAttacker().addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,
-                                        10));
-                            }
-                            else if(slotInventory.getStacks().getStackInSlot(i).getItem()
-                                    instanceof AgileBulletproofVest) {
+                                    instanceof AgileBulletproofVest || slotInventory.getStacks()
+                                    .getStackInSlot(i).getItem() instanceof StunBulletproofVest ) {
                                 multiplier=Config.getUpgradedBulletproofVestMultiplier();
                             }
                             break;
@@ -70,6 +58,57 @@ public class ModEventHandler {
                             else slotInventory.getStacks().getStackInSlot(i).setDamageValue(damaged+damage);
                         }
                         event.setBaseAmount((float)(event.getBaseAmount()*multiplier));
+                    }
+                });
+            });
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerHurt(LivingDamageEvent event) {
+        if(event.getEntity() instanceof Player player) {
+            CuriosApi.getCuriosInventory(event.getEntity()).ifPresent(curiosInventory -> {
+                curiosInventory.getStacksHandler(BulletproofVest.CURIO_SLOT).ifPresent(slotInventory -> {
+                    for(int i=0;i<slotInventory.getSlots();i++) {
+                        if(slotInventory.getStacks().getStackInSlot(i).getItem() instanceof AgileBulletproofVest) {
+                            Cooldowns cooldowns = Config.getCooldownsByUUID(player.getStringUUID());
+                            if(cooldowns.getAgileCooldown() == 0) {
+                                player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED,
+                                        Config.getAgileBulletproofVestEffectTime(),
+                                        Config.getAgileBulletproofVestAmplifier()));
+                                cooldowns.setAgileCooldown(Config.getAgileBulletproofVestCooldown());
+                            }
+                            break;
+                        }
+                    }
+                });
+            });
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerAttack(AttackEntityEvent event) {
+        if(event.getTarget() instanceof Player target) {
+            Player player = event.getEntity();
+            CuriosApi.getCuriosInventory(target).ifPresent(curioInventory -> {
+                curioInventory.getStacksHandler(BulletproofVest.CURIO_SLOT).ifPresent(slotInventory -> {
+                    for(int i=0;i<slotInventory.getSlots();i++) {
+                        if(slotInventory.getStacks().getStackInSlot(i).getItem() instanceof StunBulletproofVest) {
+                            Cooldowns cooldowns=Config.getCooldownsByUUID(target.getStringUUID());
+                            if(cooldowns.getStunCooldown() == 0) {
+                                player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS,
+                                        Config.getStunBulletproofVestEffectTime(),
+                                        Config.getStunBulletproofVestAmplifier()));
+                                player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION,
+                                        Config.getStunBulletproofVestEffectTime(),
+                                        Config.getStunBulletproofVestAmplifier()));
+                                player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,
+                                        Config.getStunBulletproofVestEffectTime(),
+                                        Config.getStunBulletproofVestAmplifier()));
+                                cooldowns.setStunCooldown(Config.getStunBulletproofVestCooldown());
+                            }
+                            break;
+                        }
                     }
                 });
             });
